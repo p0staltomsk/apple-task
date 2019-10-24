@@ -26,7 +26,7 @@ class SiteController extends Controller
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout', 'index', 'say'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -96,5 +96,14 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
+    }
+
+    /**
+     * @param string $message
+     * @return string
+     */
+    public function actionSay($message = 'Привет')
+    {
+        return $this->render('say', ['message' => $message]);
     }
 }
