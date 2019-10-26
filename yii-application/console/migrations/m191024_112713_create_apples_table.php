@@ -13,7 +13,12 @@ class m191024_112713_create_apples_table extends Migration
     public function safeUp()
     {
         $this->createTable('{{%apples}}', [
-            'id' => $this->primaryKey(),
+            'id'            => $this->primaryKey(),
+            'colorId'       => $this->integer(11)->notNull(),
+            'statusId'      => $this->integer(11)->notNull(),
+            'dateCreated'   => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
+            'dateFalls'     => $this->timestamp()->notNull()->defaultValue('0000-00-00 00:00:00'),
+            'quantity'      => $this->integer(3)->notNull()->unsigned(),
         ]);
     }
 

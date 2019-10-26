@@ -14,7 +14,18 @@ class m191024_113810_create_status_table extends Migration
     {
         $this->createTable('{{%status}}', [
             'id' => $this->primaryKey(),
+            'status' => $this->string(40)->notNull(),
         ]);
+
+        $this->batchInsert(
+            'status',
+            ['status'],
+            [
+                ['onTree'],
+                ['falledToGround'],
+                ['spoiledRotten']
+            ]
+        );
     }
 
     /**

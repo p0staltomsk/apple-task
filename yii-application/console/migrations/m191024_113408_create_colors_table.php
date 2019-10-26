@@ -14,7 +14,19 @@ class m191024_113408_create_colors_table extends Migration
     {
         $this->createTable('{{%colors}}', [
             'id' => $this->primaryKey(),
+            'color' => $this->string(40)->notNull(),
         ]);
+
+        $this->batchInsert(
+            'colors',
+            ['color'],
+            [
+                ['green'],
+                ['orange'],
+                ['red'],
+                ['black'],
+            ]
+        );
     }
 
     /**
