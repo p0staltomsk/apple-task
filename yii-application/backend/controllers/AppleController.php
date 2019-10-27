@@ -1,11 +1,20 @@
 <?php
 namespace backend\controllers;
 
+/**
+ * tools
+ */
 use Yii;
 use yii\web\Controller;
-use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-// use common\models\LoginForm;
+
+/**
+ * models
+ */
+use app\models\Apple;
+use app\models\Apples;
+use app\models\Colors;
+use app\models\Status;
 
 /**
  * Class AppleController
@@ -27,16 +36,10 @@ class AppleController extends Controller
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['task'],
+                        'actions' => ['task', 'generation'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
                 ],
             ],
         ];
@@ -57,8 +60,41 @@ class AppleController extends Controller
     /**
      * @return string
      */
+    public function actionGeneration()
+    {
+        $applesTree = new Apples();
+        $applesTree->generation(rand(15, 25));
+
+        return $this->render(
+            'task/generation',
+            [
+                'apples' => Apples::find()->orderBy('id')->asArray()->all(),
+                'colors' => Colors::find()->orderBy('id')->asArray()->all(),
+                'status' => Status::find()->orderBy('id')->asArray()->all(),
+            ]
+        );
+    }
+
+    /**
+     * @return string
+     */
     public function actionTask()
     {
-        return $this->render('task');
+        $abstractApple = new Apple('red');
+        $abstractApple->saveAppleToTree();
+        /*var_dump('<pre>', $abstractApple->color);*/
+
+        $applesTree = new Apples();
+        $deleted = $applesTree->clearTree('black'); // Пока висит на дереве - испортиться не может. Плохие удаляются при осмотре дерева.
+
+        return $this->render(
+            'task',
+            [
+                'deleted' => $deleted,
+                'apples' => Apples::find()->orderBy('id')->asArray()->all(),
+                'colors' => Colors::find()->orderBy('id')->asArray()->all(),
+                'status' => Status::find()->orderBy('id')->asArray()->all(),
+            ]
+        );
     }
 }
