@@ -1,4 +1,5 @@
 <?php
+
 namespace backend\controllers;
 
 /**
@@ -11,7 +12,6 @@ use yii\filters\AccessControl;
 /**
  * models
  */
-use app\models\Apple;
 use app\models\Apples;
 use app\models\Colors;
 use app\models\Status;
@@ -84,12 +84,13 @@ class AppleController extends Controller
      */
     public function actionTask()
     {
-        if(Yii::$app->request->get()['generation'] == 'Y') {
+        if (Yii::$app->request->get()['generation'] == 'Y') {
             return $this->actionGeneration();
         }
 
-        /*$abstractApple = new Apple('red');
-        $abstractApple->saveAbstractAppleToTree();*/
+        if (Yii::$app->request->get()['abstract'] == 'Y') {
+            return $this->actionAbstractApple();
+        }
 
         $applesTree = new Apples();
         $deleted = $applesTree->clearTree('black'); // Пока висит на дереве - испортиться не может. Плохие удаляются при осмотре дерева.
@@ -103,5 +104,13 @@ class AppleController extends Controller
                 'status' => Status::find()->orderBy('id')->asArray()->all(),
             ]
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function actionAbstractApple()
+    {
+        return $this->render('task/abstract');
     }
 }
