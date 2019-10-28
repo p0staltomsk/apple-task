@@ -25,18 +25,9 @@ class Apples extends ActiveRecord
 
         $this->clearTree();
 
-        $colors = Colors::find()->orderBy('id')->asArray()->all();
-
         for ($i = 1; $i <= $bornCount; $i++) {
 
-            $apple = new Apples();
-
-            $apple->colorId = rand(1, count($colors));
-            $apple->dateCreated = date("Y-m-d H:m:s", mt_rand(time(), 2147385600));
-            $apple->statusId = 1;
-            $apple->quantity = 100;
-
-            $apple->save();
+            Apple::newApple();
         }
     }
 
@@ -52,7 +43,7 @@ class Apples extends ActiveRecord
 
         } else {
 
-            $findColor = Colors::find()->where(['color' => 'black'])->asArray()->all();
+            $findColor  = Colors::find()->where(['color' => 'black'])->asArray()->all();
             $findApples = Apples::find()->where(['colorId' => $findColor[0]['id']])->asArray()->all();
 
             Apples::deleteAll(['id' => $findApples]);

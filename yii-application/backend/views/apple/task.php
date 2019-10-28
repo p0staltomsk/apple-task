@@ -3,12 +3,10 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 use yii\widgets\ActiveForm;
-
-// var_dump('<pre>', Yii::$app->request->post());
 ?>
 
 Root app page:
-<a href="<?= Url::to(['apple/task'/*, 'id' => 100*/])?>"><?= Html::encode("apple-task page"); ?></a>
+<a href="<?= Url::to(['apple/task'])?>"><?= Html::encode("apple-task page"); ?></a>
 
 <br />
 
@@ -31,13 +29,8 @@ if(is_array($apples)) {
 <?php $form = ActiveForm::begin(['action' => '?r=apple/generation', 'method' => 'GET']) ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Сгенерировать чистое дерево', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('Сгенерировать чистое дерево на отдельной странице', ['class' => 'btn btn-primary']) ?>
+        <a href="<?= Url::to(['apple/task', 'generation' => 'Y'])?>"><?= Html::encode("либо сгенерировать на этой странице"); ?></a>
     </div>
 
 <?php ActiveForm::end() ?>
-
-<!--@todo-->just-debug DM in view (to be clean or comment in releas):<br />
-<?
-var_dump('$apples<pre>', $apples);
-var_dump('$colors<pre>', $colors);
-var_dump('$status<pre>', $status);

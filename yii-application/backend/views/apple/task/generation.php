@@ -7,7 +7,7 @@ use yii\widgets\ActiveForm;
 ?>
 
 Back to main app:
-<a href="<?= Url::to(['apple/task'/*, 'id' => 100*/])?>"><?= Html::encode("apple-task page"); ?></a>
+<a href="<?= Url::to(['apple/task'])?>"><?= Html::encode("apple-task page"); ?></a>
 
 <br />
 

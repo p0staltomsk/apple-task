@@ -26,6 +26,22 @@ class m191024_113810_create_status_table extends Migration
                 ['spoiledRotten']
             ]
         );
+
+        $this->createIndex(
+            'statusId',
+            'apples',
+            'statusId'
+        );
+
+        $this->addForeignKey(
+            'statusId',
+            'apples',
+            'statusId',
+            'status',
+            'id',
+            'RESTRICT',
+            'RESTRICT'
+        );
     }
 
     /**
@@ -33,6 +49,16 @@ class m191024_113810_create_status_table extends Migration
      */
     public function safeDown()
     {
+        $this->dropForeignKey(
+            'statusId',
+            'apples'
+        );
+
+        $this->dropIndex(
+            'statusId',
+            'apples'
+        );
+
         $this->dropTable('{{%status}}');
     }
 }

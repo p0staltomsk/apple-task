@@ -9,7 +9,6 @@ namespace app\models;
 class Apple extends Apples
 {
     public $color;
-    public $colors;
 
     /**
      * Apple constructor.
@@ -18,9 +17,8 @@ class Apple extends Apples
      */
     public function __construct($color = 'green', array $config = [])
     {
-        $this->color = $color;
-        $this->colors = Colors::find()->orderBy('id')->asArray()->all();
-
+        $this->color = Colors::find()->where(['color' => $color])->asArray()->all()[0]['id'];
+        // var_dump('<pre>', $this->color);
         parent::__construct($config);
     }
 
@@ -32,15 +30,43 @@ class Apple extends Apples
         return '{{apples}}';
     }
 
-    public function saveAppleToTree() {
+    /**
+     * @return bool
+     */
+    public static function newApple()
+    {
+        $apple = new Apple();
 
-        $apple = new Apples();
-
-        $apple->colorId = $this->color; // @todo либо связываь таблицы либо валидировать
-        $apple->dateCreated = date("Y-m-d H:m:s", time());
         $apple->statusId = 1;
-        $apple->quantity = 100;
+        $apple->colorId = rand(1, Colors::find()->orderBy('id')->count());
+        $apple->dateCreated = date("Y-m-d H:m:s", mt_rand(time(), 2147385600));
 
-        $apple->save();
+        return $apple->save();
+    }
+
+    public function saveAbstractAppleToTree() {
+
+        $apple = new Apple();
+
+        $apple->statusId = 1;
+        $apple->colorId = $this->color;
+        $apple->dateCreated = date("Y-m-d H:m:s", time());
+
+        return $apple->save();
+    }
+
+    public static function touchAppleOnTree($id)
+    {
+
+    }
+
+    public static function fallToGround()
+    {
+
+    }
+
+    public static function eat()
+    {
+
     }
 }

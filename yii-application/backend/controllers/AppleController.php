@@ -77,12 +77,19 @@ class AppleController extends Controller
 
     /**
      * @return string
+     *
+     * На странице в приложении должны быть отображены все яблоки, (view)
+     * которые на этой же странице можно сгенерировать (инициализация дерева)
+     * в случайном кол-ве соответствующей кнопкой.
      */
     public function actionTask()
     {
-        $abstractApple = new Apple('red');
-        $abstractApple->saveAppleToTree();
-        /*var_dump('<pre>', $abstractApple->color);*/
+        if(Yii::$app->request->get()['generation'] == 'Y') {
+            return $this->actionGeneration();
+        }
+
+        /*$abstractApple = new Apple('red');
+        $abstractApple->saveAbstractAppleToTree();*/
 
         $applesTree = new Apples();
         $deleted = $applesTree->clearTree('black'); // Пока висит на дереве - испортиться не может. Плохие удаляются при осмотре дерева.

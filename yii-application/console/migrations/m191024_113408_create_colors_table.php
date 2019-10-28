@@ -27,6 +27,22 @@ class m191024_113408_create_colors_table extends Migration
                 ['black'],
             ]
         );
+
+        $this->createIndex(
+            'colorId',
+            'apples',
+            'colorId'
+        );
+
+        $this->addForeignKey(
+            'colorId',
+            'apples',
+            'colorId',
+            'colors',
+            'id',
+            'RESTRICT',
+            'RESTRICT'
+        );
     }
 
     /**
@@ -34,6 +50,16 @@ class m191024_113408_create_colors_table extends Migration
      */
     public function safeDown()
     {
+        $this->dropForeignKey(
+            'colorId',
+            'apples'
+        );
+
+        $this->dropIndex(
+            'colorId',
+            'apples'
+        );
+
         $this->dropTable('{{%colors}}');
     }
 }
