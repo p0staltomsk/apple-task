@@ -16,25 +16,40 @@ Root app page:
 if (is_array($apples)) {
     ?>
     <br/>
-    На дереве <?= count($apples) ?> яблок(а) <?= ($deleted > 0) ? ' (из них удалено ' . $deleted . ' черных)' : '' ?>:
+    На дереве <?= count($apples) ?> яблок(а) <?= ($deleted > 0) ? ' (удалено ' . $deleted . ' черных)' : '' ?>:
     <br/>
     <br/>
     <?
     foreach ($apples as $apple) {
 
+        if ($apple['howLongFalled'] > 0) {
+            echo '<span style="color: ' . $colors[$apple['colorId'] - 1]['color'] . '; padding: 0;">';
+            echo 'Время жизни: ' . $apple['howLongFalled'] . ' час. ';
+        }
         echo 'id: ' . $apple['id']
             . ', color: ' . $colors[$apple['colorId'] - 1]['color']
             . ', status: ' . $status[$apple['statusId'] - 1]['status']
+            . (($status[$apple['statusId'] - 1]['status'] == 'falledToGround') ? ', dateFalls: ' . $apple['dateFalls'] : '')
             . ', size: ' . $apple['size'];
 
-        echo ($status[$apple['statusId'] - 1]['status'] == 'onTree') ? ' <a href="'.Url::to(['apple/task', 'drop' => $apple['id']]).'">'.Html::encode("уронить").'</a>' : '';
-        echo ($status[$apple['statusId'] - 1]['status'] == 'falledToGround') ? ' 
-            <a href="'.Url::to(['apple/task', 'eat' => $apple['id']]).'">'.Html::encode("съесть целиком").'</a>, 
-            <a href="'.Url::to(['apple/task', 'eat' => $apple['id'], 'size' => 0.5]).'">'.Html::encode("откусить половину (0.5)").'</a>, 
-            <a href="'.Url::to(['apple/task', 'eat' => $apple['id'], 'size' => 0.25]).'">'.Html::encode("откусить четверть (0.25)").'</a>
-        ' : '';
+        echo ($status[$apple['statusId'] - 1]['status'] == 'onTree') ? ' <a href="' . Url::to(['apple/task', 'drop' => $apple['id']]) . '">' . Html::encode("уронить") . '</a>' : '';
 
-        echo ($status[$apple['statusId'] - 1]['status'] == 'spoiledRotten') ? ' <a href="'.Url::to(['apple/task', 'clean' => $apple['id']]).'">'.Html::encode("очистить (испорченное)").'</a>' : '';
+        if ($status[$apple['statusId'] - 1]['status'] == 'falledToGround') {
+
+            if ($apple['size'] == 1 && $colors[$apple['colorId'] - 1]['color'] == 'red') {
+                echo ' <a href="' . Url::to(['apple/task', 'eat' => $apple['id']]) . '">' . Html::encode("съесть целиком") . '</a>, ';
+            }
+            if ($apple['size'] >= 0.5) {
+                echo ' <a href="' . Url::to(['apple/task', 'eat' => $apple['id'], 'size' => 50]) . '">' . Html::encode("откусить половину (0.5)") . '</a>,';
+            }
+            if ($apple['size'] >= 0.25) {
+                echo ' <a href="' . Url::to(['apple/task', 'eat' => $apple['id'], 'size' => 25]) . '">' . Html::encode("откусить четверть (0.25)") . '</a>';
+            }
+        }
+
+        if ($apple['howLongFalled'] > 0) {
+            echo '</span>';
+        }
 
         echo '<br />';
     }
@@ -43,12 +58,24 @@ if (is_array($apples)) {
 
 <br/>
 
+<? if (count($apples)) { ?>
+    <?php $form = ActiveForm::begin(['action' => '?r=apple/task&skipTime=1', 'method' => 'GET']) ?>
+
+    <div class="form-group">
+        <?= Html::submitButton('Пропустить 1 час', ['class' => 'btn btn-primary']) ?>
+    </div>
+
+    <?php ActiveForm::end() ?>
+<? } ?>
+
 <?php $form = ActiveForm::begin(['action' => '?r=apple/generation', 'method' => 'GET']) ?>
 
 <div class="form-group">
-    <?= Html::submitButton('Сгенерировать чистое дерево на отдельной странице', ['class' => 'btn btn-primary']) ?>
-    <a href="<?= Url::to(['apple/task', 'generation' => 'Y']) ?>"><?= Html::encode("либо сгенерировать на этой странице"); ?></a> <br />
-    <a href="<?= Url::to(['apple/task', 'abstract' => 'Y']) ?>"><?= Html::encode("демонстрация работы модели через представление (Только для тестов!)"); ?></a>
+    <?= Html::submitButton('Сгенерировать дерево на отдельной странице', ['class' => 'btn btn-primary']) ?>
+    <a href="<?= Url::to(['apple/task', 'generation' => 'Y']) ?>"><?= Html::encode("либо сгенерировать чистое дерево прямо на этой странице"); ?></a>
+    <br/>
+    <br/>
+    <a href="<?= Url::to(['apple/task', 'abstract' => 'Y']) ?>"><?= Html::encode("демонстрация работы модели через представление /backend/views/apple/task/abstract (Только для тестов!)"); ?></a>
 </div>
 
 <?php ActiveForm::end() ?>

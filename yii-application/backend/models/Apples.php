@@ -43,12 +43,29 @@ class Apples extends ActiveRecord
 
         } else {
 
-            $findColor = Colors::find()->where(['color' => 'black'])->asArray()->all();
-            $findApples = Apples::find()->where(['colorId' => $findColor[0]['id']])->asArray()->all();
+            $findApples = Apples::find()->where(['colorId' => Colors::find()->where(['color' => $color])->asArray()->all()[0]['id']])->asArray()->all();
 
             Apples::deleteAll(['id' => $findApples]);
 
             return count($findApples);
         }
+    }
+
+    private static function getAllFalled()
+    {
+        $fallenApples = Apples::find()
+            /*->andWhere(['not', ['howLongFalled' => null]])*/
+            ->andWhere(['statusId' => Status::find()->where(['status' => 'falledToGround'])->asArray()->all()[0]['id']])
+            ->all();
+
+        foreach ($fallenApples as $item) {
+
+            Apple::skipAppleTime($item['id']);
+        }
+    }
+
+    public static function skipTime()
+    {
+        self::getAllFalled();
     }
 }

@@ -2,22 +2,44 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-
-use app\models\Apple;
+use yii\base\ErrorException;
 
 ?>
+
     Back to main app:
     <a href="<?= Url::to(['apple/task']) ?>"><?= Html::encode("apple-task page"); ?></a>
 
-    <br/>
-    <br/>
-
 <? /* @todo Только для тестов! */
 
-$abstractApple = new Apple('red', 'falledToGround', 0.75);
+// добавим два яблока и сохраним
+try {
 
-    echo 'цвет:' . $abstractApple->color . '<br />';
-    echo 'статус:' . $abstractApple->status . '<br />';
-    echo 'кол-во:' . $abstractApple->size . '<br />';
+    echo '<br/><br/>яблоко abstractAppleGreen<br/>';
+    echo 'осмотреть цвет: ' . $abstractAppleGreen->color . '<br />';
+    echo 'осмотреть статус: ' . $abstractAppleGreen->status . '<br />';
+    echo 'попытка откусить: ' . $abstractAppleGreen::eat($abstractAppleGreen->id, 50)['status'] . '<br />';
+    echo 'осмотреть кол-во: ' . $abstractAppleGreen->size . '<br />' . '<br />';
 
-    echo '<br />статус сохранения в БД:' . $abstractApple->saveAbstractAppleToTree() . '<br />';
+    echo 'яблоко abstractAppleRed<br/>';
+
+    echo 'осмотреть цвет: ' . $abstractAppleRed->color . '<br />';
+    echo 'осмотреть статус: ' . $abstractAppleRed->status . '<br />';
+    echo 'осмотреть кол-во: ' . $abstractAppleRed->size . '<br />';
+    echo 'попытка откусить: ' . $abstractAppleRed::eat($abstractAppleRed->id, 50)['status'] . '<br />';
+    echo 'осмотреть кол-во: ' . $abstractAppleRed->size . '<br />';
+
+    $save = $abstractAppleRed->saveAbstractAppleToTree(); // сохраняем в БД
+    echo '<br />сохраняем abstractAppleRed, lastId - ' . $save['lastId'];
+
+    $open = $abstractAppleRed::getById($save['lastId']); // смотрим последний id
+
+    $ukus = $open::eat($open->id, 50); // кусаем
+    echo '<br />кусаем abstractAppleRed $open::eat($open->id, 50);';
+
+
+    $open = $abstractAppleRed::getById($save['lastId']); // опять смотрим последний id
+    echo '<br />осмотреть кол-во: ' . $open->getAttribute('size') . '<br />';
+
+} catch (ErrorException $e) {
+    Yii::warning("Ошибка сохранения объекта.");
+}
