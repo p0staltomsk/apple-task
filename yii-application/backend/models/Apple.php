@@ -114,9 +114,12 @@ class Apple extends Apples
         }
     }
 
+    /**
+     * @param $id
+     * @return array|bool
+     */
     public static function skipAppleTime($id)
     {
-
         if ($apple = Apple::getById($id)) {
 
             $needSkeep = floatval($apple->getAttribute('howLongFalled') + 1);
@@ -156,7 +159,11 @@ class Apple extends Apples
     {
         if ($apple = Apple::findOne($id)) {
 
-            if ($apple['statusId'] != Status::find()->where(['status' => 'onTree'])->asArray()->all()[0]['id']) {
+            if (
+                $apple['statusId'] != Status::find()
+                    ->where(['status' => ['onTree', 'spoiledRotten']])
+                    ->asArray()->all()[0]['id']
+            ) {
 
                 $apple->setAttribute('size', ($apple->getAttribute('size') - floatval('0.' . $part)));
 
@@ -170,7 +177,7 @@ class Apple extends Apples
                 return ['status' => $saveStatus, 'removeStatus' => $removeStatus];
 
             } else {
-                Yii::warning("Яблоко с id " . $id . " нельзя кусать с дерева.");
+                Yii::warning("Яблоко с id " . $id . " нельзя кусать, испорченное или на дереве.");
             }
 
         } else {
@@ -186,10 +193,10 @@ class Apple extends Apples
      */
     public static function eatAll($id)
     {
-        if (Apple::getById($id)['statusId'] != Status::find()->where(['status' => 'onTree'])->asArray()->all()[0]['id']) {
+        if (Apple::getById($id)['statusId'] != Status::find()->where(['status' => ['onTree', 'spoiledRotten']])->asArray()->all()[0]['id']) {
             return ['removeStatus' => self::removeApple($id)];
         } else {
-            Yii::warning("Яблоко с id " . $id . " нельзя есть на дереве.");
+            Yii::warning("Яблоко с id " . $id . " нельзя сесть, испорченно или на дереве.");
         }
     }
 
@@ -214,6 +221,6 @@ class Apple extends Apples
     {
         $this->color = Colors::find()->where(['color' => $this->color])->asArray()->all()[0]['id'];
         $this->status = Status::find()->where(['status' => $this->status])->asArray()->all()[0]['id'];
-        $this->size = (float)$this->size;
+        $this->size = (float) $this->size;
     }
 }

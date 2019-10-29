@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\base\ErrorException;
 
+use yii\widgets\ActiveForm;
+
 ?>
 
     Back to main app:
@@ -11,7 +13,7 @@ use yii\base\ErrorException;
 
 <? /* @todo Только для тестов! */
 
-// добавим два яблока и сохраним
+// добавим два яблока и сохраним красное
 try {
 
     echo '<br/><br/>яблоко abstractAppleGreen<br/>';
@@ -43,3 +45,14 @@ try {
 } catch (ErrorException $e) {
     Yii::warning("Ошибка сохранения объекта.");
 }
+?>
+
+<br/>
+
+<?php $form = ActiveForm::begin(['action' => '?r=apple/task', 'method' => 'GET']) ?>
+
+    <div class="form-group">
+        <?= Html::submitButton('Вернуться в к осмотру дерева', ['class' => 'btn btn-primary']) ?>
+    </div>
+
+<?php ActiveForm::end() ?>

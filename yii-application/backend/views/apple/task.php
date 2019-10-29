@@ -24,7 +24,7 @@ if (is_array($apples)) {
 
         if ($apple['howLongFalled'] > 0) {
             echo '<span style="color: ' . $colors[$apple['colorId'] - 1]['color'] . '; padding: 0;">';
-            echo 'Время жизни: ' . $apple['howLongFalled'] . ' час. ';
+            echo 'Время на земле: ' . $apple['howLongFalled'] . ' час. ';
         }
         echo 'id: ' . $apple['id']
             . ', color: ' . $colors[$apple['colorId'] - 1]['color']

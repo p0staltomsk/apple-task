@@ -54,7 +54,6 @@ class Apples extends ActiveRecord
     private static function getAllFalled()
     {
         $fallenApples = Apples::find()
-            /*->andWhere(['not', ['howLongFalled' => null]])*/
             ->andWhere(['statusId' => Status::find()->where(['status' => 'falledToGround'])->asArray()->all()[0]['id']])
             ->all();
 
